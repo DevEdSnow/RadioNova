@@ -187,7 +187,7 @@ radionova/
 ## 1. Clonar el repositorio
 
 ```bash
-git clone https://github.com/usuario/radionova.git
+git clone https://github.com/isairey/RadioNova.git
 ```
 
 Entrar al proyecto:
@@ -352,6 +352,8 @@ Consulta el archivo `LICENSE` para obtener más información.
 ---
 
 # 👨‍💻 Autor
+
+**Isai Reyes - FullStack Developer** 
 
 Desarrollado como una aplicación móvil de radio por Internet utilizando **React Native, Expo y TypeScript**.
 
