@@ -1,5 +1,7 @@
 import React from "react";
+
 import {
+    StyleProp,
     StyleSheet,
     Text,
     TextProps,
@@ -26,8 +28,7 @@ type TextAlign =
   | "right"
   | "justify";
 
-interface AppTextProps
-  extends TextProps {
+interface AppTextProps extends TextProps {
   children: React.ReactNode;
 
   variant?: TextVariant;
@@ -42,9 +43,7 @@ interface AppTextProps
 
   uppercase?: boolean;
 
-  numberOfLines?: number;
-
-  style?: TextStyle;
+  style?: StyleProp<TextStyle>;
 }
 
 export const AppText = ({
@@ -60,8 +59,6 @@ export const AppText = ({
   italic = false,
 
   uppercase = false,
-
-  numberOfLines,
 
   style,
 
@@ -148,7 +145,6 @@ export const AppText = ({
   return (
     <Text
       {...props}
-      numberOfLines={numberOfLines}
       style={[
         styles.base,
         getVariantStyle(),
