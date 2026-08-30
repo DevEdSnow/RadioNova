@@ -1,13 +1,11 @@
 import {
     Station,
     StationCategory,
+    StreamFormat,
 } from "@/types/station";
 
 /**
- * Estaciones disponibles por defecto.
- *
- * Estas estaciones sirven como datos iniciales
- * mientras conectamos RadioNova con el backend.
+ * Estaciones predeterminadas de RadioNova.
  */
 export const DEFAULT_STATIONS: Station[] = [
   {
@@ -15,21 +13,42 @@ export const DEFAULT_STATIONS: Station[] = [
     name: "RadioNova 98.7 FM",
     description:
       "La mejor música y entretenimiento durante todo el día.",
-    logo: "https://placehold.co/300x300/png?text=RadioNova",
+    slogan: "Tu música, tu momento.",
+    logoUrl:
+      "https://placehold.co/300x300/png?text=RadioNova",
+    coverUrl:
+      "https://placehold.co/1200x500/png?text=RadioNova",
+    frequency: "98.7 FM",
+
     stream: {
       url: "https://example.com/stream",
-      format: "audio/mpeg",
+      format: StreamFormat.MP3,
       bitrate: 128,
+      codec: "MP3",
     },
+
+    location: {
+      city: "Oaxaca",
+      state: "Oaxaca",
+      country: "México",
+    },
+
     category: StationCategory.MUSIC,
-    genre: "Pop",
     language: "es",
     country: "MX",
-    city: "Oaxaca",
-    frequency: "98.7 FM",
+
+    websiteUrl: "https://example.com",
+
+    socialMedia: {
+      facebook: "https://facebook.com/radionova",
+      instagram: "https://instagram.com/radionova",
+      youtube: "https://youtube.com/@radionova",
+    },
+
     isActive: true,
     isLive: true,
     isFavorite: false,
+    listeners: 1250,
   },
 
   {
@@ -37,21 +56,36 @@ export const DEFAULT_STATIONS: Station[] = [
     name: "Nova Hits",
     description:
       "Los éxitos más populares del momento.",
-    logo: "https://placehold.co/300x300/png?text=Nova+Hits",
+    slogan: "Los hits que quieres escuchar.",
+    logoUrl:
+      "https://placehold.co/300x300/png?text=Nova+Hits",
+    coverUrl:
+      "https://placehold.co/1200x500/png?text=Nova+Hits",
+    frequency: "101.5 FM",
+
     stream: {
       url: "https://example.com/novahits",
-      format: "audio/mpeg",
+      format: StreamFormat.MP3,
       bitrate: 128,
+      codec: "MP3",
     },
-    category: StationCategory.MUSIC,
-    genre: "Hits",
+
+    location: {
+      city: "Oaxaca",
+      state: "Oaxaca",
+      country: "México",
+    },
+
+    category: StationCategory.POP,
     language: "es",
     country: "MX",
-    city: "Oaxaca",
-    frequency: "101.5 FM",
+
+    websiteUrl: "https://example.com",
+
     isActive: true,
     isLive: true,
     isFavorite: false,
+    listeners: 980,
   },
 
   {
@@ -59,21 +93,36 @@ export const DEFAULT_STATIONS: Station[] = [
     name: "Nova Rock",
     description:
       "Rock clásico, alternativo y contemporáneo.",
-    logo: "https://placehold.co/300x300/png?text=Nova+Rock",
+    slogan: "El poder del rock.",
+    logoUrl:
+      "https://placehold.co/300x300/png?text=Nova+Rock",
+    coverUrl:
+      "https://placehold.co/1200x500/png?text=Nova+Rock",
+    frequency: "105.3 FM",
+
     stream: {
       url: "https://example.com/novarock",
-      format: "audio/mpeg",
+      format: StreamFormat.MP3,
       bitrate: 128,
+      codec: "MP3",
     },
+
+    location: {
+      city: "Oaxaca",
+      state: "Oaxaca",
+      country: "México",
+    },
+
     category: StationCategory.ROCK,
-    genre: "Rock",
     language: "es",
     country: "MX",
-    city: "Oaxaca",
-    frequency: "105.3 FM",
+
+    websiteUrl: "https://example.com",
+
     isActive: true,
     isLive: true,
     isFavorite: false,
+    listeners: 750,
   },
 
   {
@@ -81,21 +130,36 @@ export const DEFAULT_STATIONS: Station[] = [
     name: "Nova Noticias",
     description:
       "Noticias, información y actualidad.",
-    logo: "https://placehold.co/300x300/png?text=Noticias",
+    slogan: "La información al momento.",
+    logoUrl:
+      "https://placehold.co/300x300/png?text=Noticias",
+    coverUrl:
+      "https://placehold.co/1200x500/png?text=Nova+Noticias",
+    frequency: "90.1 FM",
+
     stream: {
       url: "https://example.com/noticias",
-      format: "audio/mpeg",
+      format: StreamFormat.AAC,
       bitrate: 128,
+      codec: "AAC",
     },
+
+    location: {
+      city: "Oaxaca",
+      state: "Oaxaca",
+      country: "México",
+    },
+
     category: StationCategory.NEWS,
-    genre: "Noticias",
     language: "es",
     country: "MX",
-    city: "Oaxaca",
-    frequency: "90.1 FM",
+
+    websiteUrl: "https://example.com",
+
     isActive: true,
     isLive: true,
     isFavorite: false,
+    listeners: 540,
   },
 
   {
@@ -103,70 +167,124 @@ export const DEFAULT_STATIONS: Station[] = [
     name: "Nova Classic",
     description:
       "Los grandes clásicos de todos los tiempos.",
-    logo: "https://placehold.co/300x300/png?text=Classic",
+    slogan: "Los clásicos nunca mueren.",
+    logoUrl:
+      "https://placehold.co/300x300/png?text=Classic",
+    coverUrl:
+      "https://placehold.co/1200x500/png?text=Nova+Classic",
+    frequency: "92.9 FM",
+
     stream: {
       url: "https://example.com/classic",
-      format: "audio/mpeg",
+      format: StreamFormat.MP3,
       bitrate: 128,
+      codec: "MP3",
     },
-    category: StationCategory.CLASSIC,
-    genre: "Clásicos",
+
+    location: {
+      city: "Oaxaca",
+      state: "Oaxaca",
+      country: "México",
+    },
+
+    category: StationCategory.VARIETY,
     language: "es",
     country: "MX",
-    city: "Oaxaca",
-    frequency: "92.9 FM",
+
+    websiteUrl: "https://example.com",
+
     isActive: true,
     isLive: true,
     isFavorite: false,
+    listeners: 620,
   },
 ];
 
 /**
- * Estación recomendada para mostrar
- * inicialmente en la aplicación.
+ * Estación predeterminada.
  */
 export const DEFAULT_STATION =
   DEFAULT_STATIONS[0];
 
 /**
- * Número máximo de estaciones
- * mostradas inicialmente.
+ * Número de estaciones que se muestran
+ * inicialmente.
  */
 export const DEFAULT_STATIONS_LIMIT = 20;
 
 /**
- * Categorías principales que aparecen
- * en la interfaz.
+ * Categorías disponibles para la interfaz.
  */
 export const STATION_CATEGORIES = [
   {
     id: "all",
     name: "Todas",
-    category: null,
+    category: undefined,
   },
+
   {
     id: "music",
     name: "Música",
     category: StationCategory.MUSIC,
   },
-  {
-    id: "rock",
-    name: "Rock",
-    category: StationCategory.ROCK,
-  },
+
   {
     id: "pop",
     name: "Pop",
     category: StationCategory.POP,
   },
+
+  {
+    id: "rock",
+    name: "Rock",
+    category: StationCategory.ROCK,
+  },
+
+  {
+    id: "electronic",
+    name: "Electrónica",
+    category: StationCategory.ELECTRONIC,
+  },
+
   {
     id: "news",
     name: "Noticias",
     category: StationCategory.NEWS,
   },
+
   {
-    id: "classic",
-    name: "Clásicos",
-    category: StationCategory.CLASSIC,
+    id: "sports",
+    name: "Deportes",
+    category: StationCategory.SPORTS,
+  },
+
+  {
+    id: "regional",
+    name: "Regional",
+    category: StationCategory.REGIONAL,
+  },
+
+  {
+    id: "culture",
+    name: "Cultura",
+    category: StationCategory.CULTURE,
+  },
+
+  {
+    id: "talk",
+    name: "Talk",
+    category: StationCategory.TALK,
+  },
+
+  {
+    id: "religious",
+    name: "Religiosa",
+    category: StationCategory.RELIGIOUS,
+  },
+
+  {
+    id: "variety",
+    name: "Variedades",
+    category: StationCategory.VARIETY,
   },
 ] as const;
