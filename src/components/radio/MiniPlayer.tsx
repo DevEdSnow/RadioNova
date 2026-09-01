@@ -14,17 +14,17 @@ import { LiveIndicator } from "./LiveIndicator";
 import { getThemeColors } from "@/constants/theme";
 import { useTheme } from "@/hooks/useTheme";
 
-import { usePlayer } from "@/hooks/usePlayer";
-import { useRadioStore } from "@/store";
+import { useRadioStore } from "@/store/radioStore";
 
 interface MiniPlayerProps {
   onPress?: () => void;
-
+  onPlayPause?: () => void;
   style?: StyleProp<ViewStyle>;
 }
 
 export const MiniPlayer = ({
   onPress,
+  onPlayPause,
   style,
 }: MiniPlayerProps) => {
   const {
@@ -37,28 +37,41 @@ export const MiniPlayer = ({
     isDark
   );
 
-  const currentStation =
-    useRadioStore(
-      (state) => state.currentStation
-    );
+  const currentStation = useRadioStore(
+    (state) => state.currentStation
+  );
 
-  const {
-    isPlaying,
-    isLoading,
-    play,
-    pause,
-  } = usePlayer();
+  const isPlaying = useRadioStore(
+    (state) => state.isPlaying
+  );
 
+  const isLoading = useRadioStore(
+    (state) => state.isLoading
+  );
+
+  const setPlaying = useRadioStore(
+    (state) => state.setPlaying
+  );
+
+  /**
+   * Si no existe una estación seleccionada,
+   * no mostramos el MiniPlayer.
+   */
   if (!currentStation) {
     return null;
   }
 
-  const handlePlayPause = async () => {
-    if (isPlaying) {
-      await pause();
-    } else {
-      await play(currentStation);
+  const handlePlayPause = () => {
+    if (isLoading) {
+      return;
     }
+
+    if (onPlayPause) {
+      onPlayPause();
+      return;
+    }
+
+    setPlaying(!isPlaying);
   };
 
   return (
@@ -76,8 +89,8 @@ export const MiniPlayer = ({
       ]}
     >
       <Pressable
-        style={styles.stationButton}
         onPress={onPress}
+        style={styles.stationButton}
       >
         <Image
           source={{
@@ -119,17 +132,15 @@ export const MiniPlayer = ({
             backgroundColor:
               colors.primary,
 
-            opacity: pressed
-              ? 0.75
-              : isLoading
-                ? 0.5
+            opacity: isLoading
+              ? 0.5
+              : pressed
+                ? 0.75
                 : 1,
           },
         ]}
       >
-        <AppText
-          style={styles.playIcon}
-        >
+        <AppText style={styles.playIcon}>
           {isLoading
             ? "⏳"
             : isPlaying
@@ -152,7 +163,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
 
     paddingHorizontal: 12,
-
     paddingVertical: 8,
 
     borderTopWidth: 1,
@@ -174,13 +184,13 @@ const styles = StyleSheet.create({
   stationButton: {
     flex: 1,
 
+    minWidth: 0,
+
     flexDirection: "row",
 
     alignItems: "center",
 
     gap: 10,
-
-    minWidth: 0,
   },
 
   logo: {
