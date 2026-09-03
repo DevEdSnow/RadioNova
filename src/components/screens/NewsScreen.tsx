@@ -11,7 +11,7 @@ import {
 } from "react-native";
 
 import { Colors } from "@/constants/colors";
-import { News } from "@/types/news";
+import { News, NewsCategory } from "@/types/news";
 
 interface NewsScreenProps {
   news?: News[];
@@ -23,48 +23,81 @@ export default function NewsScreen({
   onNewsPress,
 }: NewsScreenProps) {
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] =
+    useState<NewsCategory | null>(null);
 
+  /**
+   * Filtrar noticias
+   */
   const filteredNews = useMemo(() => {
     const query = search.trim().toLowerCase();
 
-    if (!query) {
-      return news;
-    }
-
     return news.filter((item) => {
-      return (
+      const matchesSearch =
+        !query ||
         item.title.toLowerCase().includes(query) ||
-        item.description
-          ?.toLowerCase()
-          .includes(query) ||
-        item.source
-          ?.toLowerCase()
-          .includes(query)
-      );
+        item.summary.toLowerCase().includes(query) ||
+        item.content.toLowerCase().includes(query) ||
+        item.author?.toLowerCase().includes(query) ||
+        item.source?.toLowerCase().includes(query) ||
+        item.tags?.some((tag) =>
+          tag.toLowerCase().includes(query)
+        );
+
+      const matchesCategory =
+        !selectedCategory ||
+        item.category === selectedCategory;
+
+      return matchesSearch && matchesCategory;
     });
-  }, [news, search]);
+  }, [news, search, selectedCategory]);
 
-  const formatDate = (date?: string) => {
-    if (!date) {
-      return "";
-    }
-
+  /**
+   * Formatear fecha
+   */
+  const formatDate = (date: string) => {
     const parsedDate = new Date(date);
 
     if (Number.isNaN(parsedDate.getTime())) {
       return date;
     }
 
-    return parsedDate.toLocaleDateString(
-      "es-MX",
-      {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }
-    );
+    return parsedDate.toLocaleDateString("es-MX", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
   };
 
+  /**
+   * Nombre de categoría
+   */
+  const getCategoryName = (
+    category: NewsCategory
+  ) => {
+    const categories: Record<
+      NewsCategory,
+      string
+    > = {
+      [NewsCategory.GENERAL]: "General",
+      [NewsCategory.MUSIC]: "Música",
+      [NewsCategory.ENTERTAINMENT]:
+        "Entretenimiento",
+      [NewsCategory.TECHNOLOGY]: "Tecnología",
+      [NewsCategory.SPORTS]: "Deportes",
+      [NewsCategory.CULTURE]: "Cultura",
+      [NewsCategory.LOCAL]: "Local",
+      [NewsCategory.NATIONAL]: "Nacional",
+      [NewsCategory.INTERNATIONAL]:
+        "Internacional",
+    };
+
+    return categories[category];
+  };
+
+  /**
+   * Renderizar noticia
+   */
   const renderNews = ({
     item,
   }: {
@@ -95,19 +128,27 @@ export default function NewsScreen({
               </Text>
             </View>
           )}
+
+          {/* Noticia destacada */}
+          {item.featured && (
+            <View style={styles.featuredBadge}>
+              <Text style={styles.featuredText}>
+                DESTACADA
+              </Text>
+            </View>
+          )}
         </View>
 
         {/* Contenido */}
         <View style={styles.newsContent}>
-          {item.source && (
-            <Text
-              style={styles.source}
-              numberOfLines={1}
-            >
-              {item.source}
+          {/* Categoría */}
+          <View style={styles.categoryContainer}>
+            <Text style={styles.categoryText}>
+              {getCategoryName(item.category)}
             </Text>
-          )}
+          </View>
 
+          {/* Título */}
           <Text
             style={styles.newsTitle}
             numberOfLines={3}
@@ -115,20 +156,39 @@ export default function NewsScreen({
             {item.title}
           </Text>
 
-          {item.description && (
-            <Text
-              style={styles.description}
-              numberOfLines={2}
-            >
-              {item.description}
-            </Text>
-          )}
+          {/* Resumen */}
+          <Text
+            style={styles.summary}
+            numberOfLines={2}
+          >
+            {item.summary}
+          </Text>
 
-          {item.publishedAt && (
-            <Text style={styles.date}>
-              {formatDate(item.publishedAt)}
-            </Text>
-          )}
+          {/* Autor / fuente */}
+          <View style={styles.metadata}>
+            {item.author && (
+              <Text
+                style={styles.metadataText}
+                numberOfLines={1}
+              >
+                Por {item.author}
+              </Text>
+            )}
+
+            {item.source && (
+              <Text
+                style={styles.metadataText}
+                numberOfLines={1}
+              >
+                {item.source}
+              </Text>
+            )}
+          </View>
+
+          {/* Fecha */}
+          <Text style={styles.date}>
+            {formatDate(item.publishedAt)}
+          </Text>
         </View>
       </Pressable>
     );
@@ -185,11 +245,65 @@ export default function NewsScreen({
           )}
         </View>
 
-        {/* Contador */}
+        {/* Categorías */}
+        <FlatList
+          horizontal
+          data={[
+            null,
+            ...Object.values(NewsCategory),
+          ]}
+          keyExtractor={(item, index) =>
+            item ?? `all-${index}`
+          }
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={
+            styles.categoriesContent
+          }
+          style={styles.categoriesList}
+          renderItem={({ item }) => {
+            const isSelected =
+              selectedCategory === item;
+
+            return (
+              <Pressable
+                onPress={() =>
+                  setSelectedCategory(item)
+                }
+                style={[
+                  styles.categoryButton,
+                  isSelected &&
+                    styles.categoryButtonSelected,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.categoryButtonText,
+                    isSelected &&
+                      styles.categoryButtonTextSelected,
+                  ]}
+                >
+                  {item
+                    ? getCategoryName(item)
+                    : "Todas"}
+                </Text>
+              </Pressable>
+            );
+          }}
+        />
+
+        {/* Encabezado de resultados */}
         <View style={styles.resultsHeader}>
-          <Text style={styles.resultsTitle}>
-            Últimas noticias
-          </Text>
+          <View>
+            <Text style={styles.resultsTitle}>
+              Últimas noticias
+            </Text>
+
+            {selectedCategory && (
+              <Text style={styles.selectedCategory}>
+                {getCategoryName(selectedCategory)}
+              </Text>
+            )}
+          </View>
 
           <Text style={styles.resultsCount}>
             {filteredNews.length}{" "}
@@ -199,7 +313,7 @@ export default function NewsScreen({
           </Text>
         </View>
 
-        {/* Lista */}
+        {/* Lista de noticias */}
         {filteredNews.length > 0 ? (
           <FlatList
             data={filteredNews}
@@ -215,24 +329,29 @@ export default function NewsScreen({
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyIcon}>
-              {search ? "🔎" : "📰"}
+              {search || selectedCategory
+                ? "🔎"
+                : "📰"}
             </Text>
 
             <Text style={styles.emptyTitle}>
-              {search
+              {search || selectedCategory
                 ? "No se encontraron noticias"
                 : "No hay noticias disponibles"}
             </Text>
 
             <Text style={styles.emptyDescription}>
-              {search
-                ? "Intenta buscar con otro término."
+              {search || selectedCategory
+                ? "Intenta cambiar la búsqueda o seleccionar otra categoría."
                 : "Las noticias aparecerán aquí cuando estén disponibles."}
             </Text>
 
-            {search.length > 0 && (
+            {(search || selectedCategory) && (
               <Pressable
-                onPress={() => setSearch("")}
+                onPress={() => {
+                  setSearch("");
+                  setSelectedCategory(null);
+                }}
                 style={({ pressed }) => [
                   styles.clearSearchButton,
                   pressed && styles.pressed,
@@ -241,7 +360,7 @@ export default function NewsScreen({
                 <Text
                   style={styles.clearSearchButtonText}
                 >
-                  Limpiar búsqueda
+                  Limpiar filtros
                 </Text>
               </Pressable>
             )}
@@ -300,7 +419,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     height: 48,
-    marginBottom: 20,
+    marginBottom: 12,
     paddingHorizontal: 14,
     borderRadius: 14,
     backgroundColor: Colors.light.card,
@@ -334,6 +453,39 @@ const styles = StyleSheet.create({
     color: Colors.light.textSecondary,
   },
 
+  categoriesList: {
+    marginBottom: 16,
+    flexGrow: 0,
+  },
+
+  categoriesContent: {
+    gap: 8,
+  },
+
+  categoryButton: {
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: Colors.light.card,
+    borderWidth: 1,
+    borderColor: Colors.light.border,
+  },
+
+  categoryButtonSelected: {
+    backgroundColor: Colors.light.primary,
+    borderColor: Colors.light.primary,
+  },
+
+  categoryButtonText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: Colors.light.textSecondary,
+  },
+
+  categoryButtonTextSelected: {
+    color: "#FFFFFF",
+  },
+
   resultsHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -345,6 +497,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "800",
     color: Colors.light.text,
+  },
+
+  selectedCategory: {
+    marginTop: 2,
+    fontSize: 11,
+    fontWeight: "600",
+    color: Colors.light.primary,
   },
 
   resultsCount: {
@@ -368,7 +527,8 @@ const styles = StyleSheet.create({
 
   imageContainer: {
     width: 110,
-    height: 110,
+    height: 125,
+    position: "relative",
     marginRight: 12,
     borderRadius: 12,
     overflow: "hidden",
@@ -390,16 +550,39 @@ const styles = StyleSheet.create({
     fontSize: 32,
   },
 
+  featuredBadge: {
+    position: "absolute",
+    top: 6,
+    left: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 4,
+    borderRadius: 7,
+    backgroundColor: Colors.light.primary,
+  },
+
+  featuredText: {
+    fontSize: 7,
+    fontWeight: "800",
+    color: "#FFFFFF",
+  },
+
   newsContent: {
     flex: 1,
     justifyContent: "center",
   },
 
-  source: {
+  categoryContainer: {
+    alignSelf: "flex-start",
     marginBottom: 4,
-    fontSize: 10,
+    paddingHorizontal: 7,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: Colors.light.background,
+  },
+
+  categoryText: {
+    fontSize: 9,
     fontWeight: "800",
-    textTransform: "uppercase",
     color: Colors.light.primary,
   },
 
@@ -410,15 +593,27 @@ const styles = StyleSheet.create({
     color: Colors.light.text,
   },
 
-  description: {
+  summary: {
     marginTop: 5,
     fontSize: 12,
     lineHeight: 17,
     color: Colors.light.textSecondary,
   },
 
-  date: {
+  metadata: {
     marginTop: 6,
+    flexDirection: "row",
+    gap: 8,
+  },
+
+  metadataText: {
+    flexShrink: 1,
+    fontSize: 10,
+    color: Colors.light.textSecondary,
+  },
+
+  date: {
+    marginTop: 5,
     fontSize: 10,
     color: Colors.light.textSecondary,
   },
