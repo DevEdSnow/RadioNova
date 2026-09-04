@@ -54,8 +54,8 @@ export default function ProfileScreen({
       return "RN";
     }
 
-    const firstName = user.nombre?.charAt(0) ?? "";
-    const lastName = user.apellido?.charAt(0) ?? "";
+   const firstName = user.name?.charAt(0) ?? "";
+const lastName = user.lastName?.charAt(0) ?? "";
 
     return (
       `${firstName}${lastName}`.toUpperCase() ||
@@ -64,7 +64,7 @@ export default function ProfileScreen({
   };
 
   const fullName = user
-    ? `${user.nombre ?? ""} ${user.apellido ?? ""}`.trim()
+    ? `${user.name ?? ""} ${user.lastName ?? ""}`.trim()
     : "Usuario de RadioNova";
 
   return (
@@ -100,20 +100,16 @@ export default function ProfileScreen({
               {fullName}
             </Text>
 
-            {user?.correo && (
+            {user?.email && (
               <Text
                 style={styles.email}
                 numberOfLines={1}
               >
-                {user.correo}
+                {user.email}
               </Text>
             )}
 
-            {user?.telefono && (
-              <Text style={styles.phone}>
-                📱 {user.telefono}
-              </Text>
-            )}
+           
           </View>
         </View>
 
