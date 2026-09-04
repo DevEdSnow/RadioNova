@@ -15,7 +15,7 @@ import { Station } from "@/types/station";
 
 import NowPlayingComponent from "@/components/radio/NowPlaying";
 import PlayerControls from "@/components/radio/PlayerControls";
-import VolumeControls from "@/components/radio/VolumeControls";
+import VolumeControls from "@/components/radio/VolumeControl";
 
 interface RadioScreenProps {
   station?: Station | null;
